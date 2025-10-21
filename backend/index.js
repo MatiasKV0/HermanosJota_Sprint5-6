@@ -14,21 +14,15 @@ const app = express();
 app.use(cors(corsOptions));
 dotenv.config({ quiet: true });
 
+app.use(express.json());
+
 const PORT = process.env.PORT || 5000;
 
 conectarDB();
 
-app.use(printConsole);
-
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
-
-app.get("/", (req, res) => {
-  res.send("¡Bienvenido al API de Mueblería Jota!");
-});
-
 app.use("/api/productos", productsRouter);
 
+app.use(printConsole);
 app.use(notFound);
 app.use(errorHandler);
 

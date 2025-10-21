@@ -2,20 +2,14 @@ import mongoose from "mongoose";
 
 const productoSchema = mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     nombre: {
       type: String,
       required: true,
     },
     descripcion: {
-      type: String,
-      required: true,
+      type: String
     },
-    imagen: {
+    imagenUrl: {
       type: String,
       required: true,
     },
@@ -31,6 +25,9 @@ const productoSchema = mongoose.Schema(
     categoria: {
       type: String,
     },
+    stock:{
+      type: Number,
+    }
   },
   {
     timestamps: true,

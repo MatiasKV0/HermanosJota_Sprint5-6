@@ -1,7 +1,7 @@
-import productos from "../data/products.js";
+import Producto from "../models/Producto.js";
 
 const getAllProducts = async (req, res) => {
-  console.log("Productos:", productos);
+  const productos = await Producto.find();
   res.json({
     total: productos.length,
     productos,
@@ -9,24 +9,48 @@ const getAllProducts = async (req, res) => {
 };
 
 const getProduct = async (req, res, next) => {
-  const id = Number(req.params.id);
+  try {
+    const id = Number(req.params.id);
 
-  if (Number.isNaN(id)) {
-    const error = new Error("ID inválido");
-    error.status = 400;
-    return next(error);
+    if (Number.isNaN(id)) {
+      const error = new Error("ID inválido");
+      error.status = 400;
+      return next(error);
+    }
+
+    const product = await Producto.find({ id: id });
+    console.log(product);
+
+    if (!product) {
+      const error = new Error("Producto no encontrado");
+      error.status = 404;
+      return next(error);
+    }
+
+    console.log("Producto solicitado:", id);
+    res.json({ product });
+  } catch (error) {
+    next(error);
   }
-
-  const product = productos.find((p) => p.id === id);
-
-  if (!product) {
-    const error = new Error("Producto no encontrado");
-    error.status = 404;
-    return next(error);
-  }
-
-  console.log("Producto solicitado:", id);
-  res.json({ product });
 };
 
-export { getAllProducts, getProduct };
+const postProduct = async (req, res, next) => {
+  const producto = new Producto(req.body);
+  try {
+    const productoGuardado = await producto.save();
+    res.json(productoGuardado);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
+const putProduct = async (req, res, next) => {
+
+};
+
+const deleteProduct = async (req, res, next) => {
+  
+};
+
+export { getAllProducts, getProduct, postProduct, putProduct, deleteProduct };
