@@ -7,6 +7,7 @@ import Contacto from "./pages/contacto/Contacto";
 import ProductosContainer from "./pages/productos/ProductosContainer";
 import Producto from "./pages/producto/Producto";
 import Carrito from "./pages/carrito/Carrito";
+import FormProducto from "./pages/crear-producto/FormProducto";
 import "./style.css";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Route path="/producto/:id" element={<Producto />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/carrito" element={<Carrito />} />
+            <Route path="/admin/crear-producto" element={<FormProducto/>}/>
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
