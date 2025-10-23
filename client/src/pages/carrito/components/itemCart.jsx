@@ -5,17 +5,16 @@ export default function ItemCart({item},index) {
   const { updateQuantity, removeFromCart } = useCart();
 
   const precioTotal = item.precio * item.quantity;
-  const urlImg = import.meta.env.VITE_BACKEND_URL_IMG || "http://localhost:5000/uploads";
 
   return (
     <div className="cart-item" key={index}>
       <img
-        src={`${urlImg}${item.imagen}`}
+        src={`${item.imagenUrl}`}
         alt={item.nombre}
         className="item-image"
       />
 
-      <Link className="item-details" to={`/producto/${item.id}`}>
+      <Link className="item-details" to={`/producto/${item._id}`}>
         <h3 className="item-name">{item.nombre}</h3>
         <p className="item-description">{item.descripcion}</p>
       </Link>
@@ -33,14 +32,14 @@ export default function ItemCart({item},index) {
         <div className="quantity-controls">
           <button
             className="quantity-btn minus"
-            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+            onClick={() => updateQuantity(item._id, item.quantity - 1)}
           >
             -
           </button>
           <div>{item.quantity}</div>
           <button
             className="quantity-btn plus"
-            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+            onClick={() => updateQuantity(item._id, item.quantity + 1)}
           >
             +
           </button>
@@ -48,7 +47,7 @@ export default function ItemCart({item},index) {
 
         <button
           className="remove-btn"
-          onClick={() => removeFromCart(item.id)}
+          onClick={() => removeFromCart(item._id)}
         >
           Eliminar
         </button>

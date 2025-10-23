@@ -37,7 +37,7 @@ export default function Carrito() {
     if (productos.length > 0 && cart.length > 0) {
       const filtrado = cart
         .map((item) => {
-          const prod = productos.find((p) => p.id === item.id);
+          const prod = productos.find((p) => p._id === item.id);
           return prod ? { ...prod, quantity: item.quantity } : null;
         })
         .filter(Boolean);
@@ -81,7 +81,7 @@ export default function Carrito() {
           ) : (
             <ul>
               {carritoCompleto.map((item) => (
-                <ItemCart item={item} key={item.id} />
+                <ItemCart item={item} key={item._id} />
               ))}
             </ul>
           )}

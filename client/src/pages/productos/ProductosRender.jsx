@@ -3,7 +3,6 @@ import NavCategorias from "./components/NavCategorias";
 import ListaProductos from "./components/ListaProductos";
 
 export default function ProductosRender({
-  url,
   data,
   loading,
   response,
@@ -33,7 +32,6 @@ export default function ProductosRender({
           <div>
             <h1>Productos</h1>
             <ListaProductos
-              url={url}
               data={data}
               loading={loading}
               response={response}
