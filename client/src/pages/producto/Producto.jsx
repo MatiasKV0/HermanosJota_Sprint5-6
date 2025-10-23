@@ -130,18 +130,19 @@ export default function Producto() {
               </button>
             </div>
           </div>
-
-          <div className="producto__panel">
-            <dl id="p-atributos" className="atributos">
-              {atributos &&
-                Object.entries(atributos).map(([k, v]) => (
-                  <div key={k} className="atributo__item">
-                    <dt className="atributo__key">{k}</dt>
-                    <dd className="atributo__value">{v}</dd>
-                  </div>
-                ))}
-            </dl>
-          </div>
+          {atributos &&
+            <div className="producto__panel">
+              <dl id="p-atributos" className="atributos">
+                {atributos &&
+                  Object.entries(atributos).map(([k, v]) => (
+                    <div key={k} className="atributo__item">
+                      <dt className="atributo__key">{k}</dt>
+                      <dd className="atributo__value">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          }
         </div>
       </section>
     </main>

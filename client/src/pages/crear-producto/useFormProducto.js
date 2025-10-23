@@ -88,6 +88,17 @@ export default function useFormProducto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validar()) {
+      const atributosCompletos = Object.entries({
+        medidas: form.medidas,
+        materiales: form.materiales,
+        color: form.color,
+        estructura: form.estructura,
+        caracteristicas: form.caracteristicas,
+      }).reduce((acc, [key, value]) => {
+        if (value && value.trim() !== "") acc[key] = value;
+        return acc;
+      }, {});
+
       const producto = {
         nombre: form.nombre,
         descripcion: form.descripcion,
@@ -95,13 +106,7 @@ export default function useFormProducto() {
         precio: Number(form.precio),
         categoria: form.categoria,
         stock: Number(form.stock),
-        atributos: {
-          materiales: form.materiales,
-          medidas: form.medidas,
-          estructura: form.estructura,
-          caracteristicas: form.caracteristicas,
-          color: form.color,
-        },
+        atributos: atributosCompletos,
       };
 
       try {

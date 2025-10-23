@@ -77,8 +77,30 @@ select {
   flex-direction: column;
 }
 
+.form__medidas{
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.form__medidas input{
+  width: 100%;
+}
+
+.input-error{
+  border: 1px solid var(--colorprimario) !important;
+}
+
 @media (max-width: 768px) {
   .main__formProducto {
     width: 90%;
+  }
+  .form__medidas {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .form__medidas input{
+  width:auto;
   }
 }

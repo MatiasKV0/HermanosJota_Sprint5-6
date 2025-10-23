@@ -82,7 +82,7 @@ export default function FormProducto() {
 
         <AtributosForm form={form} handleChange={handleChange} />
 
-        <button type="submit" disabled={!!exito}>
+        <button type="submit" disabled={exito}>
           Agregar Producto
         </button>
 
