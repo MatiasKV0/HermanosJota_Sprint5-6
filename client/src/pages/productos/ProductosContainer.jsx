@@ -3,7 +3,6 @@ import ProductosRender from "./ProductosRender";
 
 export default function ProductosContainer() {
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  const urlImg = import.meta.env.VITE_BACKEND_URL_IMG || "http://localhost:5000/uploads";
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState(null);
@@ -48,7 +47,6 @@ export default function ProductosContainer() {
 
   return (
     <ProductosRender
-      url={urlImg}
       data={productosFiltrados || []}
       loading={loading}
       response={response}

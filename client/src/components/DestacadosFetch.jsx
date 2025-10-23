@@ -6,7 +6,6 @@ import "../pages/home/home.css";
 
 export default function DestacadosFetch() {
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  const urlImg = import.meta.env.VITE_BACKEND_URL_IMG || "http://localhost:5000/uploads";
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,8 +45,8 @@ export default function DestacadosFetch() {
   return (
     <div className="destacados-content">
       {data.map((producto, index) => (
-        <Link to={'/producto/'+producto.id} key={index}>
-          <img src={urlImg + producto.imagen} alt={producto.nombre} />
+        <Link to={'/producto/'+producto._id} key={index}>
+          <img src={producto.imagenUrl} alt={producto.nombre} />
         </Link>
       ))}
     </div>

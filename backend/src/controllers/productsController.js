@@ -10,7 +10,7 @@ const getAllProducts = async (req, res) => {
 
 const getProduct = async (req, res, next) => {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
 
     if (Number.isNaN(id)) {
       const error = new Error("ID inválido");
@@ -18,7 +18,7 @@ const getProduct = async (req, res, next) => {
       return next(error);
     }
 
-    const product = await Producto.find({ id: id });
+    const product = await Producto.findById(id);
     console.log(product);
 
     if (!product) {
@@ -45,12 +45,8 @@ const postProduct = async (req, res, next) => {
   }
 };
 
-const putProduct = async (req, res, next) => {
+const putProduct = async (req, res, next) => {};
 
-};
-
-const deleteProduct = async (req, res, next) => {
-  
-};
+const deleteProduct = async (req, res, next) => {};
 
 export { getAllProducts, getProduct, postProduct, putProduct, deleteProduct };

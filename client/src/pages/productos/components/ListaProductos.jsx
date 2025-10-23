@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function ListaProductos({ url, data, loading, response }) {
+export default function ListaProductos({ data, loading, response }) {
   return (
     <div
       id="productos__container"
@@ -14,11 +14,11 @@ export default function ListaProductos({ url, data, loading, response }) {
         !response &&
         data.map((p) => (
           <Link
-            key={p.id}
-            to={`/producto/${p.id}`}
+            key={p._id}
+            to={`/producto/${p._id}`}
           >
             <img
-              src={`${url}${p.imagen}`}
+              src={`${p.imagenUrl}`}
               alt={p.nombre}
               loading="lazy"
             />

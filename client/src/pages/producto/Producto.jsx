@@ -15,7 +15,6 @@ export default function Producto() {
 
   const navigate = useNavigate();
   const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  const urlImg = import.meta.env.VITE_BACKEND_URL_IMG || "http://localhost:5000/uploads";
 
   useEffect(() => {
     let alive = true;
@@ -44,7 +43,7 @@ export default function Producto() {
   }, [id, url]);
 
   useEffect(() => {
-    const productoEnCarrito = cart.find((p) => p.id === Number(id));
+    const productoEnCarrito = cart.find((p) => p._id === Number(id));
     const cantidadActual = productoEnCarrito ? productoEnCarrito.quantity : 0;
     if (qty === "" || (cantidadActual + qty === 99 && qty === 0)) {
       setDisponible(false);
@@ -69,10 +68,10 @@ export default function Producto() {
       <p className="msg">Producto no encontrado.</p>
     );
 
-  const { nombre, atributos, precio, descripcion, imagen } = product;
+  const { nombre, atributos, precio, descripcion, imagenUrl } = product;
 
   const handleClick = () => {
-    addToCart(product.id, qty);
+    addToCart(product._id, qty);
     navigate("/carrito");
   };
 
@@ -83,7 +82,7 @@ export default function Producto() {
           <figure className="producto__figure">
             <img
               id="p-img"
-              src={`${urlImg}${imagen}`}
+              src={`${imagenUrl}`}
               alt="Imagen del producto"
               loading="lazy"
             />
@@ -131,18 +130,19 @@ export default function Producto() {
               </button>
             </div>
           </div>
-
-          <div className="producto__panel">
-            <dl id="p-atributos" className="atributos">
-              {atributos &&
-                Object.entries(atributos).map(([k, v]) => (
-                  <div key={k} className="atributo__item">
-                    <dt className="atributo__key">{k}</dt>
-                    <dd className="atributo__value">{v}</dd>
-                  </div>
-                ))}
-            </dl>
-          </div>
+          {atributos &&
+            <div className="producto__panel">
+              <dl id="p-atributos" className="atributos">
+                {atributos &&
+                  Object.entries(atributos).map(([k, v]) => (
+                    <div key={k} className="atributo__item">
+                      <dt className="atributo__key">{k}</dt>
+                      <dd className="atributo__value">{v}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
+          }
         </div>
       </section>
     </main>
