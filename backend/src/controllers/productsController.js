@@ -47,6 +47,27 @@ const postProduct = async (req, res, next) => {
 
 const putProduct = async (req, res, next) => {};
 
-const deleteProduct = async (req, res, next) => {};
+const deleteProduct = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const productoEliminado = await Producto.findByIdAndDelete(id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const error = new Error("Id inválido");
+      error.status = 400;
+      return next(error);
+    }
+
+    if (!productoEliminado) {
+      const error = new Error("Producto no encontrado");
+      error.status = 404;
+      return next(error);
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
 
 export { getAllProducts, getProduct, postProduct, putProduct, deleteProduct };
