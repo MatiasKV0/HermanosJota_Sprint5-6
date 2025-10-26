@@ -1,26 +1,29 @@
 import Producto from "../models/Producto.js";
 import mongoose from "mongoose";
 
-const getAllProducts = async (req, res) => {
-  const productos = await Producto.find();
-  res.json({
-    total: productos.length,
-    productos,
-  });
+const getAllProducts = async (req, res, next) => {
+  try {
+    const productos = await Producto.find();
+    res.status(200).json({
+      total: productos.length,
+      productos,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const getProduct = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
 
-    if (Number.isNaN(id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       const error = new Error("ID inválido");
       error.status = 400;
       return next(error);
     }
 
     const product = await Producto.findById(id);
-    console.log(product);
 
     if (!product) {
       const error = new Error("Producto no encontrado");
@@ -29,55 +32,54 @@ const getProduct = async (req, res, next) => {
     }
 
     console.log("Producto solicitado:", id);
-    res.json({ product });
+    res.status(200).json({ product });
   } catch (error) {
     next(error);
   }
 };
 
 const postProduct = async (req, res, next) => {
-  const producto = new Producto(req.body);
   try {
+    const producto = new Producto(req.body);
     const productoGuardado = await producto.save();
-    res.json(productoGuardado);
+    res.status(201).json(productoGuardado);
   } catch (error) {
-    console.log(error);
+    console.error("Error al crear producto:", error.message);
+    if (!error.status) error.status = 400;
     next(error);
   }
 };
 
 const putProduct = async (req, res, next) => {
   try {
-    const productoId = req.params.id;
+    const { id } = req.params;
     const datosActualizados = req.body;
-    console.log(`Actualizando producto con ID ${productoId} con datos:`, datosActualizados);
 
-    if (!mongoose.Types.ObjectId.isValid(productoId)) {
-      const error = new Error('ID inválido');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      const error = new Error("ID inválido");
       error.status = 400;
       return next(error);
     }
 
     const productoActualizado = await Producto.findByIdAndUpdate(
-      productoId,
-      datosActualizados, 
+      id,
+      datosActualizados,
       { new: true, runValidators: true }
     );
 
     if (!productoActualizado) {
-      const error = new Error('Producto no encontrado para actualizar');
+      const error = new Error("Producto no encontrado para actualizar");
       error.status = 404;
       return next(error);
     }
 
     res.status(200).json({
-      mensaje: 'Producto actualizado con éxito',
-      producto: productoActualizado
+      mensaje: "Producto actualizado con éxito",
+      producto: productoActualizado,
     });
-
   } catch (error) {
-    console.error('Error al actualizar producto:', error.message);
-    error.status = 400;
+    console.error("Error al actualizar producto:", error.message);
+    if (!error.status) error.status = 500;
     next(error);
   }
 };
@@ -87,7 +89,7 @@ const deleteProduct = async (req, res, next) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      const error = new Error("Id inválido");
+      const error = new Error("ID inválido");
       error.status = 400;
       return next(error);
     }
@@ -100,12 +102,10 @@ const deleteProduct = async (req, res, next) => {
       return next(error);
     }
 
-    return res.status(204).send();
-
+    res.status(204).send();
   } catch (error) {
     next(error);
   }
 };
-
 
 export { getAllProducts, getProduct, postProduct, putProduct, deleteProduct };
