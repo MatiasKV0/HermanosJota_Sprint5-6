@@ -1,4 +1,5 @@
 import Producto from "../models/Producto.js";
+import mongoose from "mongoose";
 
 const getAllProducts = async (req, res) => {
   const productos = await Producto.find();
@@ -50,6 +51,12 @@ const putProduct = async (req, res, next) => {
     const productoId = req.params.id;
     const datosActualizados = req.body;
     console.log(`Actualizando producto con ID ${productoId} con datos:`, datosActualizados);
+
+    if (!mongoose.Types.ObjectId.isValid(productoId)) {
+      const error = new Error('ID inválido');
+      error.status = 400;
+      return next(error);
+    }
 
     const productoActualizado = await Producto.findByIdAndUpdate(
       productoId,
