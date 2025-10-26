@@ -1,4 +1,5 @@
 import Producto from "../models/Producto.js";
+import mongoose from "mongoose";
 
 const getAllProducts = async (req, res) => {
   const productos = await Producto.find();
@@ -50,13 +51,14 @@ const putProduct = async (req, res, next) => {};
 const deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const productoEliminado = await Producto.findByIdAndDelete(id);
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       const error = new Error("Id inválido");
       error.status = 400;
       return next(error);
     }
+
+    const productoEliminado = await Producto.findByIdAndDelete(id);
 
     if (!productoEliminado) {
       const error = new Error("Producto no encontrado");
@@ -65,9 +67,11 @@ const deleteProduct = async (req, res, next) => {
     }
 
     return res.status(204).send();
+
   } catch (error) {
     next(error);
   }
 };
+
 
 export { getAllProducts, getProduct, postProduct, putProduct, deleteProduct };
