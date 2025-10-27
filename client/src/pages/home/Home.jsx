@@ -1,5 +1,5 @@
 import Hero from "./components/Hero";
-import Destacados from "./components/Destacados";
+import DestacadosContainer from "./components/DestacadosContainer";
 import About from "./components/About";
 import Reviews from "./components/Reviews";
 
@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className="home">
       <Hero />
-      <Destacados />
+      <DestacadosContainer />
       <About />
       <Reviews />
     </main>
