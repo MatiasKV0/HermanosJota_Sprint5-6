@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { useCart } from "../../context/cartContext"; 
+import { useCart } from "../../context/CartContext"; 
 import "./header.css";
 
 export default function Header() {

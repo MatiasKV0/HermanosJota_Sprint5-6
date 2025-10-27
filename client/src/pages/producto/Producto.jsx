@@ -1,78 +1,69 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCart } from "../../context/cartContext";
+import { useCart } from "../../context/CartContext";
+import { useData } from "../../context/DataContext";
+import { eliminarProducto } from "../../data/db";
+
 import "./producto.css";
 
 export default function Producto() {
   const { id } = useParams();
   const { cart, addToCart } = useCart();
+  const { getProductoById, loading: dataLoading, error: dataError, reloadProductos } = useData();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [disponible, setDisponible] = useState(true);
-  const [response, setResponse] = useState(null);
+  const [producto, setProducto] = useState(null);
   const [qty, setQty] = useState(1);
+  const [disponible, setDisponible] = useState(true);
 
   const navigate = useNavigate();
-  const url = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${url}/api/productos/${id}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        const p = data.product ?? data;
-        if (alive) {
-          setProduct(p);
-          setResponse(null);
-        }
-      } catch (e) {
-        if (alive) setResponse("Ocurrió un error: " + e.message);
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
+
+    const fetchProducto = async () => {
+      const p = await getProductoById(id);
+      if (alive) setProducto(p);
+    };
+
+    fetchProducto();
+
     return () => {
       alive = false;
     };
-  }, [id, url]);
+  }, [id, getProductoById]);
 
   useEffect(() => {
-    const productoEnCarrito = cart.find((p) => p._id === Number(id));
+    if (!producto) return;
+    const productoEnCarrito = cart.find((p) => p._id === id);
     const cantidadActual = productoEnCarrito ? productoEnCarrito.quantity : 0;
-    if (qty === "" || (cantidadActual + qty === 99 && qty === 0)) {
-      setDisponible(false);
-    }
-    else {
-      setDisponible(cantidadActual + qty <= 99);
-    }
-  }, [cart, qty, id]);
+    setDisponible(cantidadActual + qty <= 99);
+  }, [cart, qty, id, producto]);
 
-  if (loading)
-    return (
-      <p className="msg">Cargando...</p>
-    );
+  if (dataLoading) return <p className="msg">Cargando...</p>;
+  if (dataError) return <p className="msg">{dataError}</p>;
+  if (!producto) return <p className="msg">Producto no encontrado.</p>;
 
-  if (response)
-    return (
-      <p className="msg">{response}</p>
-    );
-
-  if (!product)
-    return (
-      <p className="msg">Producto no encontrado.</p>
-    );
-
-  const { nombre, atributos, precio, descripcion, imagenUrl } = product;
+  const { nombre, atributos, precio, descripcion, imagenUrl } = producto;
 
   const handleClick = () => {
-    addToCart(product._id, qty);
+    addToCart(producto._id, qty);
     navigate("/carrito");
+  };
+
+  const handleClickDelete = async () => {
+    const confirmado = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
+    if (!confirmado) return;
+    try {
+      await eliminarProducto(producto._id);
+      await reloadProductos();
+      navigate("/productos");
+    } catch (error) {
+      alert("Error al eliminar el producto. Inténtalo de nuevo.");
+    }
+  };
+
+  const handleClickEdit = () => {
+    navigate(`/admin/editar-producto/${producto._id}`);
   };
 
   return (
@@ -82,8 +73,8 @@ export default function Producto() {
           <figure className="producto__figure">
             <img
               id="p-img"
-              src={`${imagenUrl}`}
-              alt="Imagen del producto"
+              src={imagenUrl}
+              alt={nombre}
               loading="lazy"
             />
           </figure>
@@ -91,14 +82,16 @@ export default function Producto() {
 
         <div className="producto__info">
           <h1 id="p-nombre" className="producto__titulo">{nombre}</h1>
-
           <div className="producto__panel">
             <p id="p-descripcion" className="producto__descripcion">{descripcion}</p>
           </div>
 
           <div className="producto__cantidad">
             <div className="producto__precio">
-              <span id="p-available" style={{ color: disponible ? "var(--colorsecundario)" : "var(--colorprimario)" }}>
+              <span
+                id="p-available"
+                style={{ color: disponible ? "var(--colorsecundario)" : "var(--colorprimario)" }}
+              >
                 {disponible ? "Stock disponible" : "Stock no disponible"}
               </span>
               <h2 id="p-price">${Number(precio)?.toLocaleString("es-AR")}</h2>
@@ -115,36 +108,49 @@ export default function Producto() {
                 className="cantidad-input"
                 onChange={(e) => {
                   const value = e.target.value;
-                  if (/^\d*$/.test(value)) {
-                    setQty(Number(value));
-                  }
+                  if (/^\d*$/.test(value)) setQty(Number(value));
                 }}
               />
               <button
                 id="carrito"
                 className="btn btn--primario"
-                onClick={() => handleClick(Number(qty))}
-                disabled={!disponible || Number(qty) === 0 || qty === ""}
+                onClick={handleClick}
+                disabled={!disponible || qty === 0 || qty === ""}
               >
                 Añadir al carrito
               </button>
             </div>
+            <div className="cantidad__control">
+              <button
+                className="btn btn--edit"
+                onClick={handleClickEdit}
+              >
+                Editar producto
+              </button>
+              <button
+                className="btn btn--delete"
+                onClick={handleClickDelete}
+              >
+                Eliminar producto
+              </button>
+
+            </div>
           </div>
+
           {atributos &&
             <div className="producto__panel">
               <dl id="p-atributos" className="atributos">
-                {atributos &&
-                  Object.entries(atributos).map(([k, v]) => (
-                    <div key={k} className="atributo__item">
-                      <dt className="atributo__key">{k}</dt>
-                      <dd className="atributo__value">{v}</dd>
-                    </div>
-                  ))}
+                {Object.entries(atributos).map(([k, v]) => (
+                  <div key={k} className="atributo__item">
+                    <dt className="atributo__key">{k}</dt>
+                    <dd className="atributo__value">{v}</dd>
+                  </div>
+                ))}
               </dl>
             </div>
           }
         </div>
       </section>
-    </main>
+    </main >
   );
 }

@@ -151,6 +151,29 @@
   cursor: not-allowed;
 }
 
+.btn--delete{
+  margin: 1rem 0 0 0.5rem;
+  border-radius: 10px;
+  background: var(--colorprimario);
+  border: 2px solid var(--colorprimario);
+}
+
+.btn--delete:hover {
+  background-color: var(--colordetallesoro);
+  border-color: var(--colordetallesoro);
+}
+
+.btn--edit{
+  margin: 1rem 0.5rem 0 0;
+  border-radius: 10px;
+  background: var(--colorsecundario);
+  border: 2px solid var(--colorsecundario);
+}
+
+.btn--edit:hover {
+  background-color: var(--colordetallesoro);
+  border-color: var(--colordetallesoro);
+}
 
 .producto__precio {
   display: flex;
