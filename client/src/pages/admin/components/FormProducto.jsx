@@ -2,13 +2,13 @@ import "./FormProducto.css";
 import useFormProducto from "./useFormProducto";
 import AtributosForm from "./AtributosForm";
 
-export default function FormProducto() {
-  const { form, errores, exito, handleChange, handleSubmit } = useFormProducto();
+export default function FormProducto({ initialData, onSubmit }) {
+  const { form, errores, exito, handleChange, handleSubmit } =
+    useFormProducto(initialData, onSubmit);
 
   return (
     <main className="main__formProducto">
-      <h1>Agregar nuevo producto</h1>
-
+      <h1>{initialData ? "Editar producto" : "Agregar nuevo producto"}</h1>
       <form className="formProducto" onSubmit={handleSubmit} noValidate>
         <label>Nombre*</label>
         <input
@@ -82,10 +82,9 @@ export default function FormProducto() {
 
         <AtributosForm form={form} handleChange={handleChange} />
 
-        <button type="submit" disabled={exito}>
-          Agregar Producto
+       <button type="submit" disabled={exito}>
+          {initialData ? "Guardar cambios" : "Agregar Producto"}
         </button>
-
         {exito && <div className="success-message">{exito}</div>}
       </form>
     </main>
