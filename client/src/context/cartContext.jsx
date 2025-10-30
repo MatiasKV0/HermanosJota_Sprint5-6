@@ -16,25 +16,29 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (productId, quantity = 1) => {
+  const addToCart = (producto, quantity = 1) => {
     setCart((prev) => {
-      const found = prev.find((p) => p.id === productId);
+      const found = prev.find((p) => p.id === producto._id);
+      const stock = producto.stock ?? 0;
       if (found) {
-        const newQuantity = Math.min(found.quantity + quantity, 99); 
+        const newQuantity = Math.min(found.quantity + quantity, stock);
         return prev.map((p) =>
-          p.id === productId ? { ...p, quantity: newQuantity } : p
+          p.id === producto._id ? { ...p, quantity: newQuantity } : p
         );
       }
-      return [...prev, { id: productId, quantity: Math.min(quantity, 99) }]; 
+      return [
+        ...prev,
+        { id: producto._id, quantity: Math.min(quantity, stock), stock },
+      ];
     });
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = (productId, newQuantity, stock) => {
     if (newQuantity < 1) return;
     setCart((prev) =>
       prev.map((p) =>
         p.id === productId
-          ? { ...p, quantity: Math.min(newQuantity, 99) } 
+          ? { ...p, quantity: Math.min(newQuantity, stock ?? p.stock) }
           : p
       )
     );

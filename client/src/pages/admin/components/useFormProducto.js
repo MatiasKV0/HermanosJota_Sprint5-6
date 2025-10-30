@@ -86,10 +86,6 @@ export default function useFormProducto(initialData = null, onSubmit) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!onSubmit || typeof onSubmit !== "function") {
-      setErrores({ general: "No hay función onSubmit definida." });
-      return;
-    }
 
     if (validar()) {
       const atributosCompletos = Object.entries(form.atributos || {}).reduce(
@@ -128,6 +124,16 @@ export default function useFormProducto(initialData = null, onSubmit) {
         console.error(error);
         setErrores({ general: "Ocurrió un error al guardar el producto." });
       }
+    }
+    else{
+      setExito("");
+      setErrores((prev) => ({...prev, general: "Por favor corrija los errores del formulario."}) );
+      setTimeout(() => {
+        setErrores((prev) => {
+          const {[ "general" ]: _, ...rest} = prev;
+          return rest;
+        });
+      }, 3000);
     }
   };
 

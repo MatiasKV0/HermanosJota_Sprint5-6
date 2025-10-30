@@ -20,7 +20,7 @@ export default function AtributosForm({ form, handleChange }) {
     if (medidasStr) {
       const cleaned = String(medidasStr).replace(/\s*cm\s*$/i, "");
       const partes = cleaned.split(/\s*x\s*/i).map((v) => v.trim());
-      if (partes.length === 3) {
+      if (partes.length > 0) {
         setLargo(partes[0]);
         setAlto(partes[1]);
         setAncho(partes[2]);

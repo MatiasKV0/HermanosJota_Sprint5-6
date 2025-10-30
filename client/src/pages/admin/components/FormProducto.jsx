@@ -82,10 +82,13 @@ export default function FormProducto({ initialData, onSubmit }) {
 
         <AtributosForm form={form} handleChange={handleChange} />
 
-       <button type="submit" disabled={exito}>
+        <button type="submit" disabled={exito}>
           {initialData ? "Guardar cambios" : "Agregar Producto"}
         </button>
         {exito && <div className="success-message">{exito}</div>}
+        {errores.general && (
+          <div className="error-message">{errores.general}</div>
+        )}
       </form>
     </main>
   );
