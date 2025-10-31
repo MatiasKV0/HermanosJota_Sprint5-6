@@ -1,5 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config({ quiet: true });
+
+import express from "express";
 import cors from "cors";
 
 import corsOptions from "./src/config/corsConfig.js";
@@ -11,15 +13,10 @@ import errorHandler from "./src/middleware/errorHandler.js";
 import notFound from "./src/middleware/notFound.js";
 
 const app = express();
-app.use(cors(corsOptions));
-dotenv.config({ quiet: true });
-
-app.use(express.json());
-
 const PORT = process.env.PORT || 5000;
 
-conectarDB();
-
+app.use(cors(corsOptions));
+app.use(express.json());
 app.use(logger);
 
 app.use("/api/productos", productsRouter);
@@ -27,6 +24,14 @@ app.use("/api/productos", productsRouter);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+conectarDB()
+  .then(() => {
+    console.log("Base de Datos conectada");
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error al conectar a la base de datos:", error.message);
+    process.exit(1);
+  });

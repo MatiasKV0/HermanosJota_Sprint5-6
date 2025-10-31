@@ -5,9 +5,11 @@ const productoSchema = mongoose.Schema(
     nombre: {
       type: String,
       required: true,
+      trim: true,
     },
     descripcion: {
-      type: String
+      type: String,
+      trim: true,
     },
     imagenUrl: {
       type: String,
@@ -27,6 +29,8 @@ const productoSchema = mongoose.Schema(
     },
     stock:{
       type: Number,
+      required: true,
+      min: 0,
     }
   },
   {
