@@ -9,7 +9,8 @@ export default function ProductosRender({
   categoriaSeleccionada,
   setCategoriaSeleccionada,
   textoBusqueda,
-  setTextoBusqueda
+  setTextoBusqueda,
+  onAgregarProducto,
 }) {
   return (
     <main className="productos">
@@ -26,6 +27,9 @@ export default function ProductosRender({
           <NavCategorias
             setCategoriaSeleccionada={setCategoriaSeleccionada}
           />
+          <button type="button" onClick={onAgregarProducto} className="productos__btn" aria-label="Agregar nuevo producto">
+            Agregar nuevo producto
+          </button>
         </aside>
 
         <section>

@@ -31,7 +31,6 @@ const getProduct = async (req, res, next) => {
       return next(error);
     }
 
-    console.log("Producto solicitado:", id);
     res.status(200).json({ product });
   } catch (error) {
     next(error);
